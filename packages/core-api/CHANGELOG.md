@@ -1,5 +1,11 @@
 # @backstage/core-api
 
+## 0.2.8
+
+### Patch Changes
+
+- a08c32ced: Add `BackstageRoutes` component to replace the top-level `Routes` component from `react-router` within apps, removing the need for manually appending `/*` to paths or sorting routes.
+
 ## 0.2.7
 
 ### Patch Changes

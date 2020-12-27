@@ -1,5 +1,15 @@
 # @backstage/plugin-register-component
 
+## 0.2.6
+
+### Patch Changes
+
+- 1517876fd: Register component plugin is deprecated in favor of @backstage/plugin-catalog-import
+- Updated dependencies [a08c32ced]
+- Updated dependencies [7e0b8cac5]
+  - @backstage/core@0.4.3
+  - @backstage/plugin-catalog@0.2.9
+
 ## 0.2.5
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @backstage/plugin-catalog
 
+## 0.2.9
+
+### Patch Changes
+
+- 7e0b8cac5: Add `CatalogIndexPage` and `CatalogEntityPage`, two new extensions that replace the existing `Router` component.
+
+  Add `EntityLayout` to replace `EntityPageLayout`, using children instead of an element property, and allowing for collection of all `RouteRef` mount points used within tabs.
+
+  Add `EntitySwitch` to be used to select components based on entity data, along with accompanying `isKind`, `isNamespace`, and `isComponentType` filters.
+
+- Updated dependencies [a08c32ced]
+  - @backstage/core@0.4.3
+
 ## 0.2.8
 
 ### Patch Changes
