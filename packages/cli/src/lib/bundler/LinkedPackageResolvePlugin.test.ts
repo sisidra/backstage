@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
+import * as os from 'os';
+import path from 'path';
 import { LinkedPackageResolvePlugin } from './LinkedPackageResolvePlugin';
 
 describe('LinkedPackageResolvePlugin', () => {
+  const root = os.platform() === 'win32' ? 'C:\\root' : '/root';
+
   it('should re-write paths for external packages', () => {
-    const plugin = new LinkedPackageResolvePlugin('/root/repo/node_modules', [
-      {
-        name: 'a',
-        location: '/root/external-a',
-      },
-      {
-        name: '@s/b',
-        location: '/root/external-b',
-      },
-    ]);
+    const plugin = new LinkedPackageResolvePlugin(
+      path.join(root, 'repo', 'node_modules'),
+      [
+        {
+          name: 'a',
+          location: path.join(root, 'external-a'),
+        },
+        {
+          name: '@s/b',
+          location: path.join(root, 'external-b'),
+        },
+      ],
+    );
 
     const tapAsync = jest.fn();
     const doResolve = jest.fn();
@@ -50,10 +57,10 @@ describe('LinkedPackageResolvePlugin', () => {
     const callbackX = jest.fn();
     tap(
       {
-        request: '/root/repo/package/x/src/module.ts',
-        path: '/root/repo/package/x/src',
+        request: path.join(root, 'repo', 'package', 'x', 'src', 'module.ts'),
+        path: path.join(root, 'repo', 'package', 'x', 'src'),
         context: {
-          issuer: '/root/repo/package/x/src/index.ts',
+          issuer: path.join(root, 'repo', 'package', 'x', 'src', 'index.ts'),
         },
       },
       'some-context',
@@ -81,10 +88,10 @@ describe('LinkedPackageResolvePlugin', () => {
     const callbackA = jest.fn();
     tap(
       {
-        request: '/root/external-a/src/module.ts',
-        path: '/root/external-a/src',
+        request: path.join(root, 'external-a', 'src', 'module.ts'),
+        path: path.join(root, 'external-a', 'src'),
         context: {
-          issuer: '/root/external-a/src/index.ts',
+          issuer: path.join(root, 'external-a', 'src', 'index.ts'),
         },
       },
       'some-context',
@@ -95,13 +102,25 @@ describe('LinkedPackageResolvePlugin', () => {
     expect(doResolve).toHaveBeenCalledWith(
       resolver.hooks.resolve,
       {
-        request: '/root/external-a/src/module.ts',
-        path: '/root/repo/node_modules/a/src',
+        request: path.join(root, 'external-a', 'src', 'module.ts'),
+        path: path.join(root, 'repo', 'node_modules', 'a', 'src'),
         context: {
-          issuer: '/root/repo/node_modules/a/src/index.ts',
+          issuer: path.join(
+            root,
+            'repo',
+            'node_modules',
+            'a',
+            'src',
+            'index.ts',
+          ),
         },
       },
-      'resolve /root/external-a/src/module.ts in /root/repo/node_modules/a',
+      `resolve ${path.join(
+        root,
+        'external-a',
+        'src',
+        'module.ts',
+      )} in ${path.join(root, 'repo', 'node_modules', 'a')}`,
       'some-context',
       callbackA,
     );
@@ -110,8 +129,8 @@ describe('LinkedPackageResolvePlugin', () => {
     const callbackB = jest.fn();
     tap(
       {
-        request: '/root/external-b/src/module.ts',
-        path: '/root/external-b/src',
+        request: path.join(root, 'external-b', 'src', 'module.ts'),
+        path: path.join(root, 'external-b', 'src'),
         context: {
           issuer: false,
         },
@@ -124,13 +143,18 @@ describe('LinkedPackageResolvePlugin', () => {
     expect(doResolve).toHaveBeenLastCalledWith(
       resolver.hooks.resolve,
       {
-        request: '/root/external-b/src/module.ts',
-        path: '/root/repo/node_modules/@s/b/src',
+        request: path.join(root, 'external-b', 'src', 'module.ts'),
+        path: path.join(root, 'repo', 'node_modules', '@s', 'b', 'src'),
         context: {
           issuer: false,
         },
       },
-      'resolve /root/external-b/src/module.ts in /root/repo/node_modules/@s/b',
+      `resolve ${path.join(
+        root,
+        'external-b',
+        'src',
+        'module.ts',
+      )} in ${path.join(root, 'repo', 'node_modules', '@s', 'b')}`,
       'some-context',
       callbackB,
     );
